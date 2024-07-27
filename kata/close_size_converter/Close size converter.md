@@ -1,5 +1,8 @@
+[[kata]]
 Сама ката - https://www.codewars.com/kata/667dfbaa4570b2db26aedc8c/go
-**Условие**:
+
+## Условие
+
 Description
 You have clothes international size as text (xs, s, xxl).
 Your goal is to return European number size as a number from that size.
