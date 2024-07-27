@@ -1,6 +1,4 @@
-package main
-
-import "fmt"
+package kata
 
 func GetSum(a, b int) int {
 	start := a
@@ -10,10 +8,11 @@ func GetSum(a, b int) int {
 		start = b
 		stop = a
 	}
-	fmt.Println(float64(start+stop) / 2.0)
-	return int(float64(start+stop)/2.0) * (stop - start + 1)
-}
 
-func main() {
-	fmt.Println(GetSum(0, 1))
+	total := 0
+
+	for i := start; i < stop+1; i++ {
+		total += i
+	}
+	return total
 }
