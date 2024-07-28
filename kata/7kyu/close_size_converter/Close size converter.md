@@ -1,4 +1,6 @@
 [[kata]]
+[[7kyu]]
+
 Сама ката - https://www.codewars.com/kata/667dfbaa4570b2db26aedc8c/go
 
 ## Условие
