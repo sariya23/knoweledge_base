@@ -1,4 +1,5 @@
 [[note]]
+[[Go]]
 У Go тоже оказывается есть аля дзен, как в python - https://go-proverbs.github.io/
 # Go Proverbs
 

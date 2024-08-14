@@ -1,4 +1,5 @@
 [[note]]
+[[Go]]
 Видос - https://www.youtube.com/watch?v=mvUiw9ilqn8
 
 ## Управление горутинами в Go
