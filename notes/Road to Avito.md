@@ -25,6 +25,8 @@
 
 **На что делать упор** - внутреннее устройство той или иной штуковины. Копать глубоко.
 ## Учебные видосы по тем или иным темам
-- [ ] Планировщик Go - https://www.youtube.com/watch?v=P2Tzdg8n9hw
+- [ ] Планировщик Go v1 - https://www.youtube.com/watch?v=P2Tzdg8n9hw
+- [ ] Планировщик Go v2 - https://www.youtube.com/watch?v=z9xXThOOMWc (вот это попроще вроде чем v1)
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
+- [ ] Конкурентность в Go - https://golangify.com/goroutines
