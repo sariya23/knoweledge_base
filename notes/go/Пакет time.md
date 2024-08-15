@@ -1,4 +1,4 @@
-
+[[go]]
 Статья - https://proglib.io/p/samouchitel-po-go-dlya-nachinayushchih-chast-13-rabota-s-datoy-i-vremenem-paket-time-2024-06-26
 ## Пакет time. Общее
 В Go время хранится как кол-во секунд прошедших с начала эпохи UNIX - 01.01.1970.

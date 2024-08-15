@@ -24,9 +24,11 @@
 **Часть информации взята отсюда** - https://habr.com/ru/companies/yandex_praktikum/articles/828928/
 
 **На что делать упор** - внутреннее устройство той или иной штуковины. Копать глубоко.
-## Учебные видосы по тем или иным темам
+## Общие полезности
 - [ ] Планировщик Go v1 - https://www.youtube.com/watch?v=P2Tzdg8n9hw
 - [ ] Планировщик Go v2 - https://www.youtube.com/watch?v=z9xXThOOMWc (вот это попроще вроде чем v1)
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
 - [ ] Конкурентность в Go - https://golangify.com/goroutines
+- [x] Контексты в Go - https://blog.ildarkarymov.ru/posts/context-guide/
+- Классные каналы по Go: [defer panic](https://www.youtube.com/@deferpanic) - практика + теория, [Николай Тузов](https://www.youtube.com/@nikolay_tuzov) - практика, [Владимир Балун](https://www.youtube.com/@vladimir_balun_programming) - много низкоуровневых штук
