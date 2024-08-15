@@ -2,51 +2,46 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
 
-func parseHexColorToInt(color string) []int {
+func parseHexColorToInt(color string) (int, int, int) {
 	colorNoSharp := strings.Replace(color, "#", "", 1)
-	n1, _ := strconv.ParseInt(colorNoSharp[:2], 16, 8)
-	n2, _ := strconv.ParseInt(colorNoSharp[2:4], 16, 8)
-	n3, _ := strconv.ParseInt(colorNoSharp[4:], 16, 8)
+	n1, _ := strconv.ParseInt(colorNoSharp[:2], 16, 64)
+	n2, _ := strconv.ParseInt(colorNoSharp[2:4], 16, 64)
+	n3, _ := strconv.ParseInt(colorNoSharp[4:], 16, 64)
 
-	return []int{int(n1), int(n2), int(n3)}
+	return int(n1), int(n2), int(n3)
 }
 
 type Color struct {
-	hex        string
-	decimalRep int
+	Hex string
+	V   int
 }
 
 func Brightest(colors []string) string {
+
 	maxColor := Color{
-		hex:        "",
-		decimalRep: -1,
+		Hex: "",
+		V:   0,
 	}
 
 	for _, v := range colors {
-		colorHex := strings.Replace(string(v), "#", "", 1)
-		color, err := strconv.ParseInt(colorHex, 16, 64)
-		if err != nil {
-			panic(err)
-		}
-		if color > int64(maxColor.decimalRep) {
-			maxColor.decimalRep = int(color)
-			maxColor.hex = string(v)
+		r, g, b := parseHexColorToInt(string(v))
+		fmt.Printf("r %d g %d b %d \t max color: ", r, g, b)
+		V := int(math.Max(math.Max(float64(r), float64(g)), float64(b)))
+		fmt.Println(V)
+
+		if V > maxColor.V {
+			maxColor.Hex = string(v)
+			maxColor.V = V
 		}
 	}
-
-	return maxColor.hex
+	return maxColor.Hex
 }
 
 func main() {
-	for _, v := range []string{"#00FF00", "#FFFF00", "#01130F"} {
-		color := strings.Replace(string(v), "#", "", 1)
-		n1, _ := strconv.ParseInt(color[:2], 16, 8)
-		n2, _ := strconv.ParseInt(color[2:4], 16, 8)
-		n3, _ := strconv.ParseInt(color[4:], 16, 8)
-		fmt.Println(n1, n2, n3)
-	}
+	fmt.Println(Brightest([]string{"#115A53", "#AC1672", "#0D8C3D", "#2BA73A", "#58F38F", "#F27CFD", "#8AEBF9"}))
 }
