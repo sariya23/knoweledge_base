@@ -1,7 +1,7 @@
 # Simple string reversal
 
 [[kata]]
-[[7k]]
+[[7kyu]]
 [[favorite]]
 
 Сама ката - https://www.codewars.com/kata/5a71939d373c2e634200008e/go

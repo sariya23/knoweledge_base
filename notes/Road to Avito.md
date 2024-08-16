@@ -1,6 +1,7 @@
 [[note]]
 Примерный перечень того, что нужно изучить, что нужно решить, что нужно прочитать и тд и тп
 
+# TODO
 ## Книги
 ### Go
 - [ ] Go идиомы и паттерны проектирования, Джон Боднер
@@ -20,13 +21,15 @@
 - [ ] Пока не почувствую уверенность - решать задачи на CodeWars уровня 7 и 6.
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions
 - [ ] Написать какое-нибудь веб-приложение, CLI или тг бота. 
-
-**Часть информации взята отсюда** - https://habr.com/ru/companies/yandex_praktikum/articles/828928/
-
+## Общее
+- [ ] Исследовать вопрос кэширования скомпилированных файлов
+**Часть информации взята отсюда** - https://habr.com/ru/companies/yandex_praktikum/articles/828928
 **На что делать упор** - внутреннее устройство той или иной штуковины. Копать глубоко.
-## Общие полезности
+# Общие полезности
 - [ ] Планировщик Go v1 - https://www.youtube.com/watch?v=P2Tzdg8n9hw
 - [ ] Планировщик Go v2 - https://www.youtube.com/watch?v=z9xXThOOMWc (вот это попроще вроде чем v1)
+- [ ] Тестирование в Go - https://www.youtube.com/watch?v=sVevmvyFmCA
+- [ ] Нереальная практика на Go (тг бот) - https://www.youtube.com/watch?v=tqQr2tNpJrA&t=846s
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
 - [ ] Конкурентность в Go - https://golangify.com/goroutines

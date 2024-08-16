@@ -1,7 +1,7 @@
 # Frequency sequence
 
 [[kata]]
-[[7k]]
+[[7kyu]]
 
 ## Условие
 
