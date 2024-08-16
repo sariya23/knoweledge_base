@@ -1,4 +1,5 @@
-[[digital]]
+[[note]]
+[[SQL]]
 Решил, что буду юзать постгрес через контейнер. 
 Dockerfile:
 ```Dockerfile

@@ -1,7 +1,6 @@
-# Consecutive letters
 
 [[kata]]
-[[7k]]
+[[7kyu]]
 
 ## Условие
 
