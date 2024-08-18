@@ -4,7 +4,7 @@
 # TODO
 ## Книги
 ### Go
-- [ ] Go идиомы и паттерны проектирования, Джон Боднер
+- [x] Go идиомы и паттерны проектирования, Джон Боднер
 - [ ] Black Hat Go. Программирование для хакеров и пентестеров, Коттманн Дэн, Паттен Крис, Стил Том
 - [ ] 100 ошибок в Go и как их избежать, Тейва Харшани
 - [ ] Язык программирования Go, Брайан Керниган, Алан А. А. Донован
@@ -16,6 +16,7 @@
 ## Курсы
 - [ ] Хардкорная веб-разработка
 - [ ] Курс на степике по Go - https://stepik.org/course/187490/info
+- [ ] Курс по алгосам от ЯП - https://practicum.yandex.ru/algorithms-interview/
 
 ## Практика
 - [ ] Пока не почувствую уверенность - решать задачи на CodeWars уровня 7 и 6.
@@ -29,6 +30,7 @@
 - [ ] Планировщик Go v1 - https://www.youtube.com/watch?v=P2Tzdg8n9hw
 - [ ] Планировщик Go v2 - https://www.youtube.com/watch?v=z9xXThOOMWc (вот это попроще вроде чем v1)
 - [ ] Тестирование в Go - https://www.youtube.com/watch?v=sVevmvyFmCA
+- [ ] Устройство каналов - https://www.youtube.com/watch?v=ZTJcaP4G4JM
 - [ ] Нереальная практика на Go (тг бот) - https://www.youtube.com/watch?v=tqQr2tNpJrA&t=846s
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
