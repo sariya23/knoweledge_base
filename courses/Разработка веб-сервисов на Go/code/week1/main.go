@@ -36,4 +36,9 @@ func main() {
 	for k := range map[string]int{"a": 1, "b": 2} {
 		fmt.Println(k)
 	}
+
+	var arr []int
+	arr1 := []int{}
+	fmt.Println(arr == nil)
+	fmt.Println(arr1 == nil)
 }
