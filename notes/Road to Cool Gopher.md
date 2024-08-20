@@ -19,8 +19,10 @@
 - [ ] Курс по алгосам от ЯП - https://practicum.yandex.ru/algorithms-interview/
 
 ## Практика
-- [ ] Пока не почувствую уверенность - решать задачи на CodeWars уровня 7 и 6.
-- [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions
+- [ ] Пока не почувствую уверенность - решать задачи на CodeWars уровня 7 и 6 (программирование).
+- [ ] Решать задачи на leetcode по SQL
+- [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions (программирование)
+- [ ] Прорешать задачи из этого списка - https://leetcode.com/studyplan/top-sql-50/ (SQL)
 - [ ] Написать какое-нибудь веб-приложение, CLI или тг бота. 
 ## Общее
 - [ ] Исследовать вопрос кэширования скомпилированных файлов
