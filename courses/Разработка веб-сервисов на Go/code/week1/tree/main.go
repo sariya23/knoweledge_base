@@ -32,7 +32,7 @@ type File struct {
 // 	return nil
 // }
 
-func helper(dir string, withFile bool, currList *[]string) error {
+func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		return err
@@ -40,22 +40,24 @@ func helper(dir string, withFile bool, currList *[]string) error {
 
 	for _, file := range files {
 		if file.IsDir() {
-			*currList = append(*currList, file.Name())
-			err := helper(path.Join(dir, file.Name()), withFile, currList)
+			*indent++
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent})
+			err := helper(path.Join(dir, file.Name()), withFile, currList, indent)
 			if err != nil {
 				return err
 			}
 		} else if withFile {
-			*currList = append(*currList, file.Name())
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent})
 		}
 	}
+	*indent--
 	return nil
 }
 
-func getFileDirList(dir string, withFile bool) ([]string, error) {
-	listDirsFiles := make([]string, 0)
-
-	err := helper(dir, withFile, &listDirsFiles)
+func getFileDirList(dir string, withFile bool) ([]File, error) {
+	listDirsFiles := make([]File, 0)
+	indent := 0
+	err := helper(dir, withFile, &listDirsFiles, &indent)
 
 	if err != nil {
 		return nil, err
