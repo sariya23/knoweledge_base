@@ -2,38 +2,72 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
+	"path"
 )
+
+// var listDirsFiles = make([]string, 0)
+
+const (
+	indentSymbol  = "├───"
+	boundSymbol   = "│"
+	indentValue   = "\t"
+	subFileSymbol = "└───"
+)
+
+type File struct {
+	Name   string
+	Indent int
+}
 
 // dirTree выводит список каталогов в указанной директории.
 // Если значение file равно true, то тогда выведутся и
 // файлы в каталогах.
-func dirTree(out io.Writer, dirName string, file bool) error {
+// func dirTree(out io.Writer, dirName string, file bool) error {
+// 	dirFileList, err := getFileDirList(dirName, file)
+
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
+
+func helper(dir string, withFile bool, currList *[]string) error {
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			*currList = append(*currList, file.Name())
+			err := helper(path.Join(dir, file.Name()), withFile, currList)
+			if err != nil {
+				return err
+			}
+		} else if withFile {
+			*currList = append(*currList, file.Name())
+		}
+	}
 	return nil
 }
 
-func main() {
-	// out := os.Stdout
-	// err := dirTree(out, "testdata", true)
+func getFileDirList(dir string, withFile bool) ([]string, error) {
+	listDirsFiles := make([]string, 0)
 
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
-	files, _ := os.ReadDir("testdata")
-	fmt.Println(files)
+	err := helper(dir, withFile, &listDirsFiles)
 
-	for _, f := range files {
-		if f.IsDir() {
-			fmt.Println(f.Name(), f)
-			files2, err := os.ReadDir(f.Name())
-			if err != nil {
-				fmt.Println("got error: (%v)", err)
-			}
-			fmt.Println(files2)
-			for _, f1 := range files2 {
-				fmt.Println(f1.Name())
-			}
-		}
+	if err != nil {
+		return nil, err
 	}
+
+	return listDirsFiles, nil
+}
+
+func main() {
+	list, err := getFileDirList("testdata", false)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(list)
 }
