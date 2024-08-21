@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -13,14 +14,14 @@ const (
 	boundSymbol   = "│"
 	indentValue   = "\t"
 	subFileSymbol = "└───"
-	noFileSize    = -1
+	noFileSize    = ""
 )
 
 type File struct {
 	Name     string
 	Indent   int
 	IsDir    bool
-	FileSize int
+	FileSize string
 }
 
 // dirTree выводит список каталогов в указанной директории.
@@ -41,7 +42,8 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 		char := pickChar(dirFileList[i], dirFileList[i+1])
 		tab := createTabIndent(dirFileList[i].Indent - 1)
 		if file && !dirFileList[i].IsDir {
-			fmt.Fprintf(out, "%s%s%s%s (%d)b\n", boundSymbol, tab, char, dirFileList[i].Name, dirFileList[i].FileSize)
+			fileSize := getFileSizeFormat(dirFileList[i])
+			fmt.Fprintf(out, "%s%s%s%s %s\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize)
 			continue
 		}
 		fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, tab, char, dirFileList[i].Name)
@@ -63,8 +65,15 @@ func getFileDirList(dir string, withFile bool) ([]File, error) {
 	return listDirsFiles, nil
 }
 
+func getFileSizeFormat(file File) string {
+	if file.FileSize == "0" {
+		return "empty"
+	}
+	return fmt.Sprintf("(%s)b", file.FileSize)
+}
+
 func pickChar(curr, next File) string {
-	if curr.IsDir {
+	if curr.IsDir && next.Indent > curr.Indent {
 		return indentSymbol
 	}
 	if next.Indent < curr.Indent || next.Indent > curr.Indent {
@@ -80,11 +89,6 @@ func createTabIndent(indent int) string {
 	}
 	return strings.Repeat("\t", indent)
 }
-
-// func createIndent(indent int) string {
-// 	in := strings.Split(strings.Repeat("\t", indent), "")
-// 	return strings.Join(in, "|")
-// }
 
 func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 	files, err := os.ReadDir(dir)
@@ -105,7 +109,8 @@ func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 			if err != nil {
 				return err
 			}
-			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1, FileSize: int(fileInfo.Size())})
+			fileSize := strconv.Itoa(int(fileInfo.Size()))
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1, FileSize: fileSize})
 		}
 	}
 	*indent--
@@ -113,12 +118,10 @@ func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 }
 
 func main() {
-	l, err := getFileDirList("testdata", true)
+	_, err := getFileDirList("testdata", true)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	fmt.Printf("\n%v\n", l)
 
 	dirTree(os.Stdout, "testdata", true)
 }
