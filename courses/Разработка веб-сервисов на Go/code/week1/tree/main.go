@@ -13,12 +13,14 @@ const (
 	boundSymbol   = "│"
 	indentValue   = "\t"
 	subFileSymbol = "└───"
+	noFileSize    = -1
 )
 
 type File struct {
-	Name   string
-	Indent int
-	isDir  bool
+	Name     string
+	Indent   int
+	IsDir    bool
+	FileSize int
 }
 
 // dirTree выводит список каталогов в указанной директории.
@@ -38,6 +40,10 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 		}
 		char := pickChar(dirFileList[i], dirFileList[i+1])
 		tab := createTabIndent(dirFileList[i].Indent - 1)
+		if file && !dirFileList[i].IsDir {
+			fmt.Fprintf(out, "%s%s%s%s (%d)b\n", boundSymbol, tab, char, dirFileList[i].Name, dirFileList[i].FileSize)
+			continue
+		}
 		fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, tab, char, dirFileList[i].Name)
 	}
 
@@ -58,7 +64,7 @@ func getFileDirList(dir string, withFile bool) ([]File, error) {
 }
 
 func pickChar(curr, next File) string {
-	if curr.isDir {
+	if curr.IsDir {
 		return indentSymbol
 	}
 	if next.Indent < curr.Indent || next.Indent > curr.Indent {
@@ -89,13 +95,17 @@ func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 	for _, file := range files {
 		if file.IsDir() {
 			*indent++
-			*currList = append(*currList, File{Name: file.Name(), Indent: *indent, isDir: true})
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent, IsDir: true, FileSize: noFileSize})
 			err := helper(path.Join(dir, file.Name()), withFile, currList, indent)
 			if err != nil {
 				return err
 			}
 		} else if withFile {
-			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1})
+			fileInfo, err := os.Stat(path.Join(dir, file.Name()))
+			if err != nil {
+				return err
+			}
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1, FileSize: int(fileInfo.Size())})
 		}
 	}
 	*indent--
