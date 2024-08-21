@@ -35,17 +35,17 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 
 	for i := 0; i < len(dirFileList)-1; i++ {
 		if dirFileList[i].Indent == 1 {
-			fmt.Fprintf(out, "%s%s (%t)\n", indentSymbol, dirFileList[i].Name, isLastFileInCurrentLevel(dirFileList[i:]))
+			fmt.Fprintf(out, "%s%s\n", indentSymbol, dirFileList[i].Name)
 			continue
 		}
-		char := pickChar(dirFileList[i], dirFileList[i+1])
+		char := pickChar(dirFileList[i:])
 		tab := createTabIndent(dirFileList[i].Indent - 1)
 		if file && !dirFileList[i].IsDir {
 			fileSize := getFileSizeFormat(dirFileList[i])
-			fmt.Fprintf(out, "%s%s%s%s %s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize, isLastFileInCurrentLevel(dirFileList[i:]))
+			fmt.Fprintf(out, "%s%s%s%s %s\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize)
 			continue
 		}
-		fmt.Fprintf(out, "%s%s%s%s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, isLastFileInCurrentLevel(dirFileList[i:]))
+		fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, tab, char, dirFileList[i].Name)
 	}
 
 	fmt.Fprintf(out, "%s%s", subFileSymbol, dirFileList[len(dirFileList)-1].Name)
@@ -85,11 +85,8 @@ func isLastFileInCurrentLevel(files []File) bool {
 	return false
 }
 
-func pickChar(curr, next File) string {
-	if curr.IsDir && next.Indent > curr.Indent {
-		return indentSymbol
-	}
-	if next.Indent < curr.Indent || next.Indent > curr.Indent {
+func pickChar(files []File) string {
+	if isLastFileInCurrentLevel(files) {
 		return subFileSymbol
 	}
 	return indentSymbol
