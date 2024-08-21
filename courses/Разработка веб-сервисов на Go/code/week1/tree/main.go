@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 )
 
@@ -14,14 +13,14 @@ const (
 	boundSymbol   = "│"
 	indentValue   = "\t"
 	subFileSymbol = "└───"
-	noFileSize    = ""
+	noFileSize    = -1
 )
 
 type File struct {
 	Name     string
 	Indent   int
 	IsDir    bool
-	FileSize string
+	FileSize int
 }
 
 // dirTree выводит список каталогов в указанной директории.
@@ -66,10 +65,10 @@ func getFileDirList(dir string, withFile bool) ([]File, error) {
 }
 
 func getFileSizeFormat(file File) string {
-	if file.FileSize == "0" {
+	if file.FileSize == 0 {
 		return "empty"
 	}
-	return fmt.Sprintf("(%s)b", file.FileSize)
+	return fmt.Sprintf("(%d)b", file.FileSize)
 }
 
 func pickChar(curr, next File) string {
@@ -109,7 +108,7 @@ func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 			if err != nil {
 				return err
 			}
-			fileSize := strconv.Itoa(int(fileInfo.Size()))
+			fileSize := int(fileInfo.Size())
 			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1, FileSize: fileSize})
 		}
 	}
