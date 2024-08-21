@@ -34,11 +34,11 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 	for i := 0; i < len(dirFileList)-1; i++ {
 		if dirFileList[i].Indent == 1 {
 			fmt.Fprintf(out, "%s%s\n", indentSymbol, dirFileList[i].Name)
-		} else if (dirFileList[i+1].Indent > dirFileList[i].Indent || dirFileList[i+1].Indent < dirFileList[i].Indent) && !dirFileList[i].isDir {
-			fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, strings.Repeat("\t", dirFileList[i].Indent-1), subFileSymbol, dirFileList[i].Name)
-		} else {
-			fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, strings.Repeat("\t", dirFileList[i].Indent-1), indentSymbol, dirFileList[i].Name)
+			continue
 		}
+		char := pickChar(dirFileList[i], dirFileList[i+1])
+		tab := createTabIndent(dirFileList[i].Indent - 1)
+		fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, tab, char, dirFileList[i].Name)
 	}
 
 	fmt.Fprintf(out, "%s%s", subFileSymbol, dirFileList[len(dirFileList)-1].Name)
@@ -56,6 +56,29 @@ func getFileDirList(dir string, withFile bool) ([]File, error) {
 
 	return listDirsFiles, nil
 }
+
+func pickChar(curr, next File) string {
+	if curr.isDir {
+		return indentSymbol
+	}
+	if next.Indent < curr.Indent || next.Indent > curr.Indent {
+		return subFileSymbol
+	}
+	return indentSymbol
+}
+
+func createTabIndent(indent int) string {
+	if indent >= 2 {
+		tabs := strings.Repeat("\t", indent)
+		return strings.Join(strings.Split(tabs, ""), "|")
+	}
+	return strings.Repeat("\t", indent)
+}
+
+// func createIndent(indent int) string {
+// 	in := strings.Split(strings.Repeat("\t", indent), "")
+// 	return strings.Join(in, "|")
+// }
 
 func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 	files, err := os.ReadDir(dir)
