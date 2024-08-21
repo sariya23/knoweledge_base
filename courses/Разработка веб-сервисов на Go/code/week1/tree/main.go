@@ -23,6 +23,13 @@ type File struct {
 	FileSize int
 }
 
+func (f File) getFileSizeFormat() string {
+	if f.FileSize == 0 {
+		return "empty"
+	}
+	return fmt.Sprintf("(%d)b", f.FileSize)
+}
+
 func main() {
 	dirTree(os.Stdout, "testdata", true)
 }
@@ -37,22 +44,21 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 		return err
 	}
 
-	for i := 0; i < len(dirFileList)-1; i++ {
+	for i := 0; i < len(dirFileList); i++ {
 		if dirFileList[i].Indent == 1 {
-			fmt.Fprintf(out, "%s%s\n", indentSymbol, dirFileList[i].Name)
+			fmt.Fprintf(out, "%s%s (%t)\n", indentSymbol, dirFileList[i].Name, isLastFileInCurrentLevel(dirFileList[i:]))
 			continue
 		}
 		char := pickChar(dirFileList[i:])
 		tab := createTabIndent(dirFileList[i].Indent - 1)
 		if file && !dirFileList[i].IsDir {
-			fileSize := getFileSizeFormat(dirFileList[i])
-			fmt.Fprintf(out, "%s%s%s%s %s\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize)
+			fileSize := dirFileList[i].getFileSizeFormat()
+			fmt.Fprintf(out, "%s%s%s%s %s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize, isLastFileInCurrentLevel(dirFileList[i:]))
 			continue
 		}
-		fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, tab, char, dirFileList[i].Name)
+		fmt.Fprintf(out, "%s%s%s%s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, isLastFileInCurrentLevel(dirFileList[i:]))
 	}
 
-	fmt.Fprintf(out, "%s%s", subFileSymbol, dirFileList[len(dirFileList)-1].Name)
 	return nil
 }
 
@@ -68,14 +74,10 @@ func getFileDirList(dir string, withFile bool) ([]File, error) {
 	return listDirsFiles, nil
 }
 
-func getFileSizeFormat(file File) string {
-	if file.FileSize == 0 {
-		return "empty"
-	}
-	return fmt.Sprintf("(%d)b", file.FileSize)
-}
-
 func isLastFileInCurrentLevel(files []File) bool {
+	if len(files) == 1 {
+		return true
+	}
 	currLevel := files[0].Indent
 
 	for i := 1; i < len(files); i++ {
@@ -86,7 +88,7 @@ func isLastFileInCurrentLevel(files []File) bool {
 			return true
 		}
 	}
-	return false
+	return true
 }
 
 func pickChar(files []File) string {
