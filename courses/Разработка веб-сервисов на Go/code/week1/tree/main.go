@@ -31,7 +31,7 @@ func (f File) getFileSizeFormat() string {
 }
 
 func main() {
-	dirTree(os.Stdout, "testdata", true)
+	dirTree(os.Stdout, "testdata", false)
 }
 
 // dirTree выводит список каталогов в указанной директории.
@@ -50,7 +50,8 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 			continue
 		}
 		char := pickChar(dirFileList[i:])
-		tab := createTabIndent(dirFileList[i].Indent - 1)
+		flag := isLastFileInCurrentLevel(dirFileList[i:])
+		tab := createTabIndent(dirFileList[i].Indent-1, flag)
 		if file && !dirFileList[i].IsDir {
 			fileSize := dirFileList[i].getFileSizeFormat()
 			fmt.Fprintf(out, "%s%s%s%s %s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize, isLastFileInCurrentLevel(dirFileList[i:]))
@@ -98,8 +99,8 @@ func pickChar(files []File) string {
 	return indentSymbol
 }
 
-func createTabIndent(indent int) string {
-	if indent >= 2 {
+func createTabIndent(indent int, flag bool) string {
+	if indent >= 2 && flag {
 		tabs := strings.Repeat("\t", indent)
 		return strings.Join(strings.Split(tabs, ""), "|")
 	}
