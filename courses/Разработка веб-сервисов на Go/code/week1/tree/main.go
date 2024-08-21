@@ -23,6 +23,10 @@ type File struct {
 	FileSize int
 }
 
+func main() {
+	dirTree(os.Stdout, "testdata", true)
+}
+
 // dirTree выводит список каталогов в указанной директории.
 // Если значение file равно true, то тогда выведутся и
 // файлы в каталогах.
@@ -125,13 +129,4 @@ func helper(dir string, withFile bool, currList *[]File, indent *int) error {
 	}
 	*indent--
 	return nil
-}
-
-func main() {
-	_, err := getFileDirList("testdata", true)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	dirTree(os.Stdout, "testdata", true)
 }
