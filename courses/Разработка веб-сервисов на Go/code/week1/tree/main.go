@@ -35,17 +35,17 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 
 	for i := 0; i < len(dirFileList)-1; i++ {
 		if dirFileList[i].Indent == 1 {
-			fmt.Fprintf(out, "%s%s\n", indentSymbol, dirFileList[i].Name)
+			fmt.Fprintf(out, "%s%s (%t)\n", indentSymbol, dirFileList[i].Name, isLastFileInCurrentLevel(dirFileList[i:]))
 			continue
 		}
 		char := pickChar(dirFileList[i], dirFileList[i+1])
 		tab := createTabIndent(dirFileList[i].Indent - 1)
 		if file && !dirFileList[i].IsDir {
 			fileSize := getFileSizeFormat(dirFileList[i])
-			fmt.Fprintf(out, "%s%s%s%s %s\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize)
+			fmt.Fprintf(out, "%s%s%s%s %s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, fileSize, isLastFileInCurrentLevel(dirFileList[i:]))
 			continue
 		}
-		fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, tab, char, dirFileList[i].Name)
+		fmt.Fprintf(out, "%s%s%s%s (%t)\n", boundSymbol, tab, char, dirFileList[i].Name, isLastFileInCurrentLevel(dirFileList[i:]))
 	}
 
 	fmt.Fprintf(out, "%s%s", subFileSymbol, dirFileList[len(dirFileList)-1].Name)
@@ -69,6 +69,20 @@ func getFileSizeFormat(file File) string {
 		return "empty"
 	}
 	return fmt.Sprintf("(%d)b", file.FileSize)
+}
+
+func isLastFileInCurrentLevel(files []File) bool {
+	currLevel := files[0].Indent
+
+	for i := 1; i < len(files); i++ {
+		if files[i].Indent == currLevel {
+			return false
+		}
+		if files[i].Indent < currLevel {
+			return true
+		}
+	}
+	return false
 }
 
 func pickChar(curr, next File) string {
