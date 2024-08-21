@@ -18,6 +18,7 @@ const (
 type File struct {
 	Name   string
 	Indent int
+	isDir  bool
 }
 
 // dirTree выводит список каталогов в указанной директории.
@@ -30,31 +31,17 @@ func dirTree(out io.Writer, dirName string, file bool) error {
 		return err
 	}
 
-	for i := 0; i < len(dirFileList); i++ {
-		fmt.Fprintf(out, "*%s%s\n", strings.Repeat("-", dirFileList[i].Indent), dirFileList[i].Name)
-	}
-	return nil
-}
-
-func helper(dir string, withFile bool, currList *[]File, indent *int) error {
-	files, err := os.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-
-	for _, file := range files {
-		if file.IsDir() {
-			*indent++
-			*currList = append(*currList, File{Name: file.Name(), Indent: *indent})
-			err := helper(path.Join(dir, file.Name()), withFile, currList, indent)
-			if err != nil {
-				return err
-			}
-		} else if withFile {
-			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1})
+	for i := 0; i < len(dirFileList)-1; i++ {
+		if dirFileList[i].Indent == 1 {
+			fmt.Fprintf(out, "%s%s\n", indentSymbol, dirFileList[i].Name)
+		} else if (dirFileList[i+1].Indent > dirFileList[i].Indent || dirFileList[i+1].Indent < dirFileList[i].Indent) && !dirFileList[i].isDir {
+			fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, strings.Repeat("\t", dirFileList[i].Indent-1), subFileSymbol, dirFileList[i].Name)
+		} else {
+			fmt.Fprintf(out, "%s%s%s%s\n", boundSymbol, strings.Repeat("\t", dirFileList[i].Indent-1), indentSymbol, dirFileList[i].Name)
 		}
 	}
-	*indent--
+
+	fmt.Fprintf(out, "%s%s", subFileSymbol, dirFileList[len(dirFileList)-1].Name)
 	return nil
 }
 
@@ -68,6 +55,28 @@ func getFileDirList(dir string, withFile bool) ([]File, error) {
 	}
 
 	return listDirsFiles, nil
+}
+
+func helper(dir string, withFile bool, currList *[]File, indent *int) error {
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			*indent++
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent, isDir: true})
+			err := helper(path.Join(dir, file.Name()), withFile, currList, indent)
+			if err != nil {
+				return err
+			}
+		} else if withFile {
+			*currList = append(*currList, File{Name: file.Name(), Indent: *indent + 1})
+		}
+	}
+	*indent--
+	return nil
 }
 
 func main() {
