@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"slices"
 	"strings"
 )
 
@@ -31,7 +32,20 @@ func (f File) getFileSizeFormat() string {
 }
 
 func main() {
-	dirTree(os.Stdout, "testdata/../../", true)
+	args := os.Args[1:]
+	if len(args) > 2 {
+		fmt.Println("To much arguments")
+		os.Exit(-1)
+	}
+
+	var file bool
+	path := args[0]
+
+	if len(args) == 2 {
+		file = slices.Contains(args, "-f")
+	}
+
+	dirTree(os.Stdout, path, file)
 }
 
 // dirTree выводит список каталогов в указанной директории.
