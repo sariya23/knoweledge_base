@@ -37,6 +37,7 @@
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
 - [ ] Конкурентность в Go - https://golangify.com/goroutines
+- [x] Разбор задачи на горутины - https://www.youtube.com/watch?v=Qf24zMzMmgI
 - [x] Контексты в Go - https://blog.ildarkarymov.ru/posts/context-guide/
 - Классные каналы по Go: [defer panic](https://www.youtube.com/@deferpanic) - практика + теория, [Николай Тузов](https://www.youtube.com/@nikolay_tuzov) - практика, [Владимир Балун](https://www.youtube.com/@vladimir_balun_programming) - много низкоуровневых штук
 - Канал Alek OS. Желательно посмотреть все видосы. Основные это по DS, CS и про веб
