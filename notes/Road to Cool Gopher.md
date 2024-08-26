@@ -19,7 +19,7 @@
 - [ ] Курс по алгосам от ЯП - https://practicum.yandex.ru/algorithms-interview/
 
 ## Практика
-- [ ] Пока не почувствую уверенность - решать задачи на CodeWars уровня 7 и 6 (программирование).
+- [x] Пока не почувствую уверенность - решать задачи на CodeWars уровня 7 и 6 (программирование). Прорешал примерно 50 кат уровня 7. Перехожу на литкод
 - [ ] Решать задачи на leetcode по SQL
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions (программирование)
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/studyplan/top-sql-50/ (SQL)
