@@ -306,3 +306,228 @@ func setupPrettySlog() *slog.Logger {
         logger = setupPrettySlog()
 ```
 
+
+## Хендлер для сохранения урла
+Хендлеры будут лежать в `internal/http-server/handlers`. Создадим хендлер для сохранения урла и алиаса. В папке handlers создадим каталог url, а в нем пакет `save`
+```go
+type Request struct {
+    URL   string `json:"url" validate:"required,url"`
+    Alias string `json:"alias,omitempty"`
+}
+
+type Response struct {
+    response.Response
+    Alias string `json:"alias,omitempty"`
+}  
+
+type URLSaver interface {
+    SaveURL(ctx context.Context, urlToSave string, alias string) (int, error)
+}
+
+func New(ctx context.Context, log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        const operationPlace = "handlers.url.save.New"
+        log = log.With(
+            slog.String("op", operationPlace),
+            slog.String("requies_id", middleware.GetReqID(r.Context())),
+        )
+        var request Request
+        err := render.DecodeJSON(r.Body, &request)
+        if err != nil {
+            log.Error("failed to decode request body", xslog.Err(err))
+            render.JSON(w, r, response.Error("failed to decode request"))
+            return
+        }
+        log.Info("request body decoded", slog.Any("request", request))
+        err = validator.New(validator.WithRequiredStructEnabled()).Struct(request)
+        if err != nil {
+            validationErrors := err.(validator.ValidationErrors)
+            log.Error("invalid request data", xslog.Err(err))
+            render.JSON(w, r, response.ValidationError(validationErrors))
+            return
+        }
+        alias := request.Alias
+        if alias == "" {
+            alias = random.NewRandomString(random.DefaultStringLen)
+        }
+        id, err := urlSaver.SaveURL(ctx, request.URL, alias)
+        if errors.Is(err, storage.ErrURLExists) {
+            log.Info("url already exists", "url", request.URL)
+            render.JSON(w, r, response.Error("url already exists"))
+            return
+        }
+        if err != nil {
+            log.Error("failed to add url", xslog.Err(err))
+            render.JSON(w, r, response.Error("failed to add url"))
+            return
+        }
+        log.Info("url added", slog.Int("id", id))
+        render.JSON(w, r, Response{
+            Response: response.OK(),
+            Alias:    alias,
+        })
+    }
+}
+```
+Структура `Request`. В ней содержаться поля, которые прилетят нам во время запроса в виде json. Поэтому мы используем соответствующие struct теги. `omitempty` значит, что если поле пустое, то в json этого поля вообще не будет. `validate` - это тег из стороннего пакета, который проводит... валидацию.
+Структура `Response` аналогично. Здесь мы используем встраивание. Остальная часть лежит в `internal/lib/api/response/response.go`
+```go
+package response
+
+)
+
+type Response struct {
+    Status string `json:"status"`
+    Error  string `json:"error,omitempty"`
+}
+
+const (
+    StatusOK    = "OK"
+    StatusError = "Error"
+)
+
+func OK() Response {
+    return Response{
+        Status: StatusOK,
+    }
+}
+
+func Error(msg string) Response {
+    return Response{
+        Status: StatusError,
+        Error:  msg,
+    }
+}
+
+func ValidationError(errs validator.ValidationErrors) Response {
+    var errMessages []string
+    for _, err := range errs {
+        switch err.ActualTag() {
+        case "required":
+            errMessages = append(errMessages, fmt.Sprintf("field %s is required", err.Field()))
+        case "url":
+            errMessages = append(errMessages, fmt.Sprintf("field %s is invalid URL", err.Field()))
+        default:
+            errMessages = append(errMessages, fmt.Sprintf("field %s is invalid", err.Field()))
+        }
+    }
+    return Error(strings.Join(errMessages, ", "))
+}
+```
+Интерфейс `URLSaver` нужен, чтобы не привязываться к конкретной реализации storage. Он определен здесь, так как интерфейсы должны располагаться на стороне Потребителя ([[Ошибка 6. Интерфейсы на стороне производителя]])
+Создаем новую функцию хендлер и сначала декодируем запрос с помощью `render`. Это штука из `chi`.  Потом валидируем через сторонний пакет `validator`. Мы написали `ValidationError`, так как ошибки обычного валидатора не очень понятные. Так же мы используем type cast, чтобы проверить, что произошла именно ошибка валидации. Также если не указан alias мы генерируем его сами. В `internal/lib/random` нужно создать файл `random.go`
+```go
+package random
+
+import "math/rand/v2"
+
+const DefaultStringLen = 6
+
+func NewRandomString(strLen int) string {
+    min := 97
+    max := 123
+    var res string
+    if strLen == 0 {
+        strLen = DefaultStringLen
+    }
+    for i := 0; i < strLen; i++ {
+        res += string(rune(rand.IntN(max-min) + min))
+    }
+    return res
+}
+```
+И если нигде не было ошибок, то отправляем ответ с OK. В респонзе есть поле alias для тех случаев, когда он сгенерировался автоматически.
+
+## Запускаем сервер
+```go
+    router.Post("/url", save.New(ctx, log, storage))
+    log.Info("starting server", "address", config.Address)
+    server := &http.Server{
+        Addr:         config.Address,
+        Handler:      router,
+        ReadTimeout:  config.HTTPServer.Timeout,
+        WriteTimeout: config.HTTPServer.Timeout,
+        IdleTimeout:  config.HTTPServer.IddleTimeout,
+    }
+    if err := server.ListenAndServe(); err != nil {
+        log.Error("failed to start server", xslog.Err(err))
+    }
+    log.Error("server stopped")
+```
+Добавить в роутер хендлер - это будет пост запрос.
+Далее запускаем сервер. `log.Error("server stopped")` этот лог нужен, чтобы дать понять, что сервер уже не але, так как выше значит произошла ошибка. 
+Запустим сервер и отправим туда какой-то запрос:
+![[Pasted image 20240828102026.png]]
+Алиас и урл добавились. Сходим в БД и проверим это
+![[Pasted image 20240828102500.png]]
+Тут тоже все появилось.
+
+## Тест на хэндлер save
+Чтобы не засорять и не ходить в нашу БД в тестах, замокаем ее. Для этого используется утилита mockery - https://pkg.go.dev/github.com/vektra/mockery#section-readme. Не забыть кинуть его в go/bin. Для мока нужно указать интерфейс, который нужно сымитировать и в пакете с ним создаться новый пакет `mocks`, в котором будет лежать этот mock.
+То етсь в нашем случае надо выполнить такую штуку:
+```shell
+mockery --name=URLSaver
+```
+Сам тест:
+```go
+func TestSaveHandler(t *testing.T) {
+    cases := []struct {
+        caseName    string
+        urlToSave   string
+        aliasForURL string
+        responseErr string
+        mockErr     error
+    }{
+        {
+            caseName:    "Success save",
+            urlToSave:   "http://test.ru",
+            aliasForURL: "suc",
+        },
+        {
+            caseName:    "Long url",
+            urlToSave:   "http://chart.apis.google.com/chart?chs=500x500&chma=0,0,100,100&cht=p&chco=FF0000%2CFFFF00%7CFF8000%2C00FF00%7C00FF00%2C0000FF&chd=t%3A122%2C42%2C17%2C10%2C8%2C7%2C7%2C7%2C7%2C6%2C6%2C6%2C6%2C5%2C5&chl=122%7C42%7C17%7C10%7C8%7C7%7C7%7C7%7C7%7C6%7C6%7C6%7C6%7C5%7C5&chdl=android%7Cjava%7Cstack-trace%7Cbroadcastreceiver%7Candroid-ndk%7Cuser-agent%7Candroid-webview%7Cwebview%7Cbackground%7Cmultithreading%7Candroid-source%7Csms%7Cadb%7Csollections%7Cactivity",
+            aliasForURL: "sucv2",
+        },
+        {
+            caseName:  "No allias",
+            urlToSave: "http://test.ru",
+        },
+        {
+            caseName:    "empty url",
+            urlToSave:   "",
+            aliasForURL: "empty url",
+            responseErr: fmt.Sprintf("%s %s", response.ErrMSgMissingRequiredField, "URL"),
+        },
+        {
+            caseName:    "SaveURL error",
+            urlToSave:   "http://qwe.ru",
+            responseErr: save.ErrMsgFailedAddUrl,
+            mockErr:     errors.New("unexpected error"),
+        },
+    }
+    for _, testCase := range cases {
+        t.Run(testCase.caseName, func(t *testing.T) {
+            ctx := context.Background()
+            t.Parallel()
+            urlSaverMock := mocks.NewURLSaver(t)
+            if testCase.responseErr == "" || testCase.mockErr != nil {
+                urlSaverMock.On("SaveURL", ctx, testCase.urlToSave, mock.AnythingOfType("string")).
+                    Return(1, testCase.mockErr).
+                    Once()
+            }
+            handler := save.New(ctx, slogdiscard.NewDiscardLogger(), urlSaverMock)
+            dataToRequest := fmt.Sprintf(`{"url":"%s", "alias":"%s"}`, testCase.urlToSave, testCase.aliasForURL)
+            request, err := http.NewRequest(http.MethodPost, "/url", bytes.NewReader([]byte(dataToRequest)))
+            require.NoError(t, err)
+            rr := httptest.NewRecorder()
+            handler.ServeHTTP(rr, request)
+            require.Equal(t, rr.Code, http.StatusOK)
+            body := rr.Body.String()
+            var response save.Response
+            require.NoError(t, json.Unmarshal([]byte(body), &response))
+            require.Equal(t, testCase.responseErr, response.Error)
+        })
+    }
+}
+```
+Я вот тоже в шоке - какая-то непонятная каша. Пока что не погружался в вопрос тестирования с помощью моков. Это разберу отдельно.
