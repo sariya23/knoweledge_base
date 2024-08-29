@@ -531,3 +531,124 @@ func TestSaveHandler(t *testing.T) {
 }
 ```
 Я вот тоже в шоке - какая-то непонятная каша. Пока что не погружался в вопрос тестирования с помощью моков. Это разберу отдельно.
+
+## Редирект по алиасу
+Напишем хендлер, который будет по такому роуту `/{alias}` перенаправлять пользователей на url по этому алиасу
+В `internal/http-server/handlers/redirect` создадим файл `redirect.go`. Для начала также определим интерфейс с методом, который получает url по алиасу из БД
+```go
+type URLGetter interface {
+    GetURLByAlias(ctx context.Context, alias string) (string, error)
+}
+```
+А дальше создадим хендлер
+```go
+func New(ctx context.Context, log *slog.Logger, getURL URLGetter) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        const operationPlace = "handlers.redirect.New"
+        log = log.With(
+            slog.String("op", operationPlace),
+            slog.String("requies_id", middleware.GetReqID(r.Context())),
+        )
+        alias := chi.URLParam(r, "alias")
+        if alias == "" {
+            log.Info("alias is empty")
+            render.JSON(w, r, response.Error("empty alias"))
+            return
+        }
+        url, err := getURL.GetURLByAlias(ctx, alias)
+        if errors.Is(err, storage.ErrURLNotFound) {
+            log.Info("no url on this alias", "alias", alias)
+            render.JSON(w, r, response.Error(fmt.Sprintf("no url on this alias (alias=%s)", alias)))
+            return
+        }
+        if err != nil {
+            log.Error(ErrMsgGetURL, xslog.Err(err))
+            render.JSON(w, r, response.Error("internal error"))
+            return
+        }
+        log.Info("find url by alias", "alias", alias)
+        http.Redirect(w, r, url, http.StatusFound)
+    }
+}
+```
+Чтобы получить значение из урла, мы используем `chi.URLParam`. Опять же это возможно, если использовать URLFormar middleware.
+Из интересного - использование кода редиректа 302, а не 301. Если указывать постоянный редирект (301), то клиент (браузер, например) может закэшировать это и при смене урла по алиасу будет отдавать все равно старую страницу.
+
+## Удаление алиаса
+```go
+func New(ctx context.Context, log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        const operationPlace = "handlers.url.delete.New"
+        log = log.With(
+            slog.String("op", operationPlace),
+            slog.String("request_id", middleware.GetReqID(r.Context())),
+        )
+        alias := chi.URLParam(r, "alias")
+        if alias == "" {
+            log.Info("alias is empty")
+            render.JSON(w, r, response.Error("empty alias"))
+            return
+        }
+        deletedId, err := urlDeleter.DeleteURLByAlias(ctx, alias)
+        if errors.Is(err, pgx.ErrNoRows) {
+            log.Error("no url on", "alias", alias)
+            render.JSON(w, r, response.Error("nothing to delete"))
+            return
+        }
+        if err != nil {
+            log.Error("failed to delete row", xslog.Err(err))
+            render.JSON(w, r, response.Error("failed to delete row"))
+            return
+        }
+        log.Info("success delete row by alias", "alias", alias, "deleted_id", deletedId)
+        render.JSON(w, r, Response{
+            Response:  response.OK(),
+            Alias:     alias,
+            DeletedId: deletedId,
+        })
+    }
+}
+```
+Тут ничего интересного.
+Только я немного поменял удаление строки:
+```go
+func (s *Storage) DeleteURLByAlias(ctx context.Context, alias string) (int, error) {
+    const operationPlace = "storage.postgres.GetURLByAlias"
+      var deletedRows int
+    query := `delete from url where alias=$1 returning url_id`
+    err := s.connection.QueryRow(ctx, query, alias).Scan(&deletedRows)
+    if err != nil {
+        return -1, fmt.Errorf("%s: %w", operationPlace, err)
+    }
+    return deletedRows, nil
+}
+```
+Использую `QueryRow` и скан, в случае пустого результата вернется ошибка.
+
+## Auth
+Не хочется, чтобы любой левый чел мог удалять или добавлять новые урлы - для этого надо создать группу роутов, которые будут доступны после аутентификации через midleware 
+```go
+    router.Route("/url", func(r chi.Router) {
+        r.Use(middleware.BasicAuth("url-shortener", map[string]string{
+            config.HTTPServer.UserName: config.HTTPServer.Password,
+        }))
+        r.Post("/", save.New(ctx, log, storage))
+        r.Delete("/{alias}", delete.New(ctx, log, storage))
+    })
+```
+То есть, чтобы удалить url нам нужно перейти по `/url/zxc` и запрос отправить смогут только пользователи, прошедшие аутентификацию. Важно, что внутри мы используем внутренний роутер `r` , а не внешний `router`. Вложенность роутов - как приложения в джанге. Где для каждого приложения создавались свои паттерны и потом по префиксу подключались в общую кучу.
+Также нужно место, где мы будем хранить креды пользователя. Добавим в структуру HTTPServer еще 2 поля:
+```go
+UserName     string        `yaml:"username" env-required:"true"`
+Password     string        `yaml:"password" env-required:"true" env:"HTTP_SERVER_PASSWORD"`
+```
+Юзернейм не является секретным, а вот пароль - да. Его мы будем хранить в секретах на GitHub Actions. Креды для локальной разработки можно хранить в явном виде
+```yaml
+env: "local"
+http_server:
+  address: "localhost:8082"
+  timeout: 4s  # время на чтение и отправу запроса
+  iddle_timeout: 60s   # время жизни соединения
+  username: "localuser"
+  password: "password"
+```
