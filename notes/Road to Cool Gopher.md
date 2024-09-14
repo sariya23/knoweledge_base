@@ -23,7 +23,7 @@
 - [ ] Решать задачи на leetcode по SQL
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions (программирование)
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/studyplan/top-sql-50/ (SQL)
-- [ ] Написать какое-нибудь веб-приложение, CLI или тг бота. 
+- [ ] Написать какое-нибудь веб-приложение, CLI или тг бота. URL shortener API - https://github.com/sariya23/url-shortener
 ## Общее
 - [ ] Исследовать вопрос кэширования скомпилированных файлов
 **Часть информации взята отсюда** - https://habr.com/ru/companies/yandex_praktikum/articles/828928
