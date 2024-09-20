@@ -23,7 +23,8 @@
 - [ ] Решать задачи на leetcode по SQL
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions (программирование)
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/studyplan/top-sql-50/ (SQL)
-- [ ] Написать какое-нибудь веб-приложение, CLI или тг бота. URL shortener API - https://github.com/sariya23/url-shortener
+- [x] Написать какое-нибудь веб-приложение, CLI или тг бота. URL shortener API - https://github.com/sariya23/url-shortener
+- [ ] gRPC туториал - https://www.youtube.com/playlist?list=PLy_6D98if3UJd5hxWNfAqKMr15HZqFnqf
 ## Общее
 - [ ] Исследовать вопрос кэширования скомпилированных файлов
 **Часть информации взята отсюда** - https://habr.com/ru/companies/yandex_praktikum/articles/828928
@@ -36,7 +37,6 @@
 - [ ] Нереальная практика на Go (тг бот) - https://www.youtube.com/watch?v=tqQr2tNpJrA&t=846s
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
-- [ ] RESA API Golang - https://habr.com/ru/companies/selectel/articles/747738/
 - [ ] Конкурентность в Go - https://golangify.com/goroutines
 - [x] Разбор задачи на горутины - https://www.youtube.com/watch?v=Qf24zMzMmgI
 - [x] Контексты в Go - https://blog.ildarkarymov.ru/posts/context-guide/
