@@ -6,7 +6,7 @@
 ### Go
 - [x] Go идиомы и паттерны проектирования, Джон Боднер
 - [ ] Black Hat Go. Программирование для хакеров и пентестеров, Коттманн Дэн, Паттен Крис, Стил Том
-- [ ] 100 ошибок в Go и как их избежать, Тейва Харшани
+- [x] 100 ошибок в Go и как их избежать, Тейва Харшани
 - [ ] Язык программирования Go, Брайан Керниган, Алан А. А. Донован
 
 #### PostgreSQL
@@ -25,11 +25,13 @@
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/studyplan/top-sql-50/ (SQL)
 - [x] Написать какое-нибудь веб-приложение, CLI или тг бота. URL shortener API - https://github.com/sariya23/url-shortener
 - [ ] gRPC туториал - https://www.youtube.com/playlist?list=PLy_6D98if3UJd5hxWNfAqKMr15HZqFnqf
+- [ ] Система нотификаций на Go и Kafka - https://www.freecodecamp.org/news/build-a-real-time-notification-system-with-go-and-kafka/
 ## Общее
 - [ ] Исследовать вопрос кэширования скомпилированных файлов
 **Часть информации взята отсюда** - https://habr.com/ru/companies/yandex_praktikum/articles/828928
 **На что делать упор** - внутреннее устройство той или иной штуковины. Копать глубоко.
 # Общие полезности
+- [x] Выравнивание данных - https://www.youtube.com/watch?v=KQd7bAV5npw&ab_channel=%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9%D0%A8%D0%B5%D1%81%D1%82%D0%B0%D0%BA%D0%BE%D0%B2  
 - [ ] Планировщик Go v1 - https://www.youtube.com/watch?v=P2Tzdg8n9hw
 - [ ] Планировщик Go v2 - https://www.youtube.com/watch?v=z9xXThOOMWc (вот это попроще вроде чем v1)
 - [ ] Тестирование в Go - https://www.youtube.com/watch?v=sVevmvyFmCA
