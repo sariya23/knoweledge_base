@@ -9,34 +9,26 @@ func reverseVowels(s string) string {
 	if len(s) == 1 {
 		return s
 	}
-	i := 0
-	j := len(s) - 1
-	res := []byte(s)
-	isIVowel, isJVowel := false, false
+	sb := strings.Split(s, "")
+	vowels := "aeiuoAEIOU"
+	i, j := 0, len(sb)-1
 
-	for i <= j {
-		fmt.Println(i, j)
-		if !strings.Contains("aeiou", strings.ToLower(string(res[i]))) && !isIVowel {
+	for i < j {
+		for i < j && !strings.Contains(vowels, string(sb[i])) {
 			i++
-		} else if strings.Contains("aeiou", strings.ToLower(string(res[i]))) {
-			isIVowel = true
 		}
-		if !strings.Contains("aeiou", strings.ToLower(string(res[j]))) && !isJVowel {
-			j--
-		} else if strings.Contains("aeiou", strings.ToLower(string(res[j]))) {
-			isJVowel = true
-		}
-		if strings.Contains("aeiou", strings.ToLower(string(res[i]))) && strings.Contains("aeiou", strings.ToLower(string(res[j]))) {
-			res[i], res[j] = res[j], res[i]
-			isIVowel, isJVowel = false, false
-			i++
+		for i < j && !strings.Contains(vowels, string(sb[j])) {
 			j--
 		}
+		sb[i], sb[j] = sb[j], sb[i]
+		i++
+		j--
 	}
-	return string(res)
+
+	return strings.Join(sb, "")
 }
 
 func main() {
-	fmt.Println(reverseVowels("race a car")) // AceCreIm
-	// fmt.Println(reverseVowels("leetcode"))
+	fmt.Println(reverseVowels("IceCreAm")) // AceCreIm
+	fmt.Println(reverseVowels("leetcode"))
 }
