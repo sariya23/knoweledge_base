@@ -24,7 +24,7 @@
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions (программирование)
 - [ ] Прорешать задачи из этого списка - https://leetcode.com/studyplan/top-sql-50/ (SQL)
 - [x] Написать какое-нибудь веб-приложение, CLI или тг бота. URL shortener API - https://github.com/sariya23/url-shortener
-- [ ] gRPC туториал - https://www.youtube.com/playlist?list=PLy_6D98if3UJd5hxWNfAqKMr15HZqFnqf
+- [x] gRPC туториал - https://www.youtube.com/playlist?list=PLy_6D98if3UJd5hxWNfAqKMr15HZqFnqf
 - [ ] Система нотификаций на Go и Kafka - https://www.freecodecamp.org/news/build-a-real-time-notification-system-with-go-and-kafka/
 ## Общее
 - [ ] Исследовать вопрос кэширования скомпилированных файлов
@@ -36,7 +36,7 @@
 - [ ] Планировщик Go v2 - https://www.youtube.com/watch?v=z9xXThOOMWc (вот это попроще вроде чем v1)
 - [ ] Тестирование в Go - https://www.youtube.com/watch?v=sVevmvyFmCA
 - [ ] Устройство каналов - https://www.youtube.com/watch?v=ZTJcaP4G4JM
-- [ ] Нереальная практика на Go (тг бот) - https://www.youtube.com/watch?v=tqQr2tNpJrA&t=846s
+- [x] Нереальная практика на Go (тг бот) - https://www.youtube.com/watch?v=tqQr2tNpJrA&t=846s (не очень то и нереальная)
 - [x] Введение в конкурентность Go - https://www.youtube.com/watch?v=mvUiw9ilqn8 [[Введение в конкурентность Go]]
 - [ ] Go под капотом - https://www.youtube.com/watch?v=rloqQY9CT8I (сложно, супер на потом)
 - [ ] Конкурентность в Go - https://golangify.com/goroutines
