@@ -10,7 +10,7 @@
 - [ ] Язык программирования Go, Брайан Керниган, Алан А. А. Донован
 
 #### PostgreSQL
-- [ ] PostgreSQL. Основы языка SQL. Моргунов Е.П - https://postgrespro.ru/education/books/sqlprimer
+- [x] PostgreSQL. Основы языка SQL. Моргунов Е.П - https://postgrespro.ru/education/books/sqlprimer
 
 
 ## Курсы
