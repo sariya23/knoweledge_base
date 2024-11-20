@@ -1,0 +1,26 @@
+goos: linux
+goarch: amd64
+pkg: main/ex_2_3
+cpu: AMD Ryzen 5 5600H with Radeon Graphics         
+BenchmarkPopCountViaFor-12    	100000000	        10.40 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.61 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.62 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.23 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.20 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.35 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.75 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.38 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.31 ns/op
+BenchmarkPopCountViaFor-12    	100000000	        10.34 ns/op
+BenchmarkPopCountViaSum-12    	141603601	         8.318 ns/op
+BenchmarkPopCountViaSum-12    	147017616	         8.297 ns/op
+BenchmarkPopCountViaSum-12    	145882395	         8.281 ns/op
+BenchmarkPopCountViaSum-12    	142262948	         8.103 ns/op
+BenchmarkPopCountViaSum-12    	143515042	         8.147 ns/op
+BenchmarkPopCountViaSum-12    	145449045	         8.283 ns/op
+BenchmarkPopCountViaSum-12    	143251584	         8.261 ns/op
+BenchmarkPopCountViaSum-12    	142056421	         8.278 ns/op
+BenchmarkPopCountViaSum-12    	145306194	         8.196 ns/op
+BenchmarkPopCountViaSum-12    	148566418	         8.228 ns/op
+PASS
+ok  	main/ex_2_3	30.857s
