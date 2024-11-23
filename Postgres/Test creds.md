@@ -1,4 +1,5 @@
 [[Postgres]]
+Тестовая база данных
 
 User=nikita
 Pass=1234
