@@ -1,5 +1,34 @@
 [[Airflow]]
-`default_args` - это словарь с дефолтным конфигом для каждой таски в даге. Если что в каждой таске можно переопределить параметры 
+Создать инстанс дага через класс
+```python
+from airflow import DAG
+
+dag = DAG('dag', schedule_interval=timedelta(days=1), start_date=days_ago(1))
+```
+Также можно создать даг через контекст манагер
+```python
+with DAG('dag', schedule_interval=timedelta(days=1), start_date=days_ago(1)) as dag: 
+    pass 
+```
+## Основные параметры
+- `dag_id` - уникальное имя дага. Оно отображается в UI Airflow
+- `start_date` - дата начала выполнения дага
+- `schedule` - интервал выполнения
+Момент выполнения рассчитывается по такой формуле
+```
+ExecutionDate = start_date + schedule_interval
+```
+Передавать можно как и базовым `datetime` так и внутренними библиотеками Airflow. Даг начнет выполнятся, только если текущий момент больше или равен `ExecutionDate`
+### Параметры тасок default args
+Параметры для каждой таски в даге по дефолту ставятся через параметр `default_args`
+```python
+dag = DAG(
+    'dag',
+    default_args={"retries": 3}, 
+    start_date=datetime(2024, 1, 1),
+    schedule_interval=None, 
+)
+```
 - `owner: str` - владелец или автор DAG
 - `depends_on_past: bool` - определяет, будут ли выполнятся задачи, если в прошлом они упали (если True)
 - `start_date: datetime` - время и дата, когда даг начнет первое выполнение
