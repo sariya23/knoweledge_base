@@ -22,3 +22,10 @@ if response.status_code == 200:
 else:
     print(response)
 ```
+В переменных можно хранить даже json, а также использовать их в шаблонах jinja.
+```python
+from airflow.models import Variable
+
+
+foo = Variable.get("key", deserialize_json=True)
+```
