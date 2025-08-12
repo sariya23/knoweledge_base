@@ -41,3 +41,6 @@ dag = DAG(
 - `schedule_interval: timedelta | cron_str` - интервал запуска дага. Либо timedelta, либо cron-строка
 - `max_active_runs: int` - максимальное кол-во запущенных дагов
 - `catchup: bool` - если True, то будут выполнятся задачи за пропущенные интервалы времени. То есть если есть выполнения на 1 февраля, а 1 февраля Airflow не работал, то он начнет выполнятся
+- `on_success_callback: context` - вызов функции при успешном выполнении задачи
+- `on_failure_callback: context` - вызов функции при неуспешном выполнении задачи
+- `on_retry_callback: context` - вызов функции при ретаре задачи
